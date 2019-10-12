@@ -128,3 +128,40 @@ cleaned_instacart %>%
   knitr::kable(caption = "Three Most Popular Items among the Baking Ingredients, Packaged Vegetable Fruits, and Dog Food Car Aisles") %>%
   kable_styling(bootstrap_options = c("striped", "condensed", font_size = 12))
 ```
+
+### Lastly, we can make a table of the mean hour of the day that "Pink Lady Apples" and "Coffee Ice Cream" were ordered on each day of the week by the following steps:
+* Reduce our dataframe using `filter` so "Pink Lady Apples" and "Coffee Ice Cream" are the only products present, then using `select` so "order_dow", "product_name", and "order_hour_of_day" are the only variables present.
+* Organize the dataset by: renaming "order_dow" to "day_of_week" using `mutate`, recoding the days of the week from 0-6 to Sunday-Saturday using `recode`, and reordering the days of the week from "monday" to "sunday" using `forcats::fct_relevel`
+* Obtain the mean hour of the day each product was ordered by first grouping the product and the day of the week it was ordered, then using `sumarize` to compute the mean hour of the day each product ("Pink Lady Apples" and "Coffee Ice Cream") was ordered on each day of the week (monday-sunday)
+* Organize the dataset to make more reader friendly by pivoting the table from long to wide using `pivot_wider` so the variable names are the two products ("Pink Lady Apples" and "Coffee Ice Cream"), the rows are the days of the week (monday-sunday), and the values are the mean time of day each product was ordered
+* Produce our reader-friendly table using `knitr::kable`:
+
+```{r}
+cleaned_instacart %>%
+  filter(
+    product_name == "pink lady apples" | 
+      product_name == "coffee ice cream"
+    ) %>%
+  select(order_dow, product_name, order_hour_of_day) %>%
+  mutate(
+    day_of_week = recode(order_dow,
+                         `1` = "monday", 
+                         `2` = "tuesday", 
+                         `3` = "wednesday", 
+                         `4` = "thursday", 
+                         `5` = "friday", 
+                         `6` = "saturday",
+                         `0` = "sunday"),
+    day_of_week = forcats::fct_relevel(day_of_week, c("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"))
+    ) %>%
+  group_by(product_name, day_of_week) %>%
+  summarize(mean_hour = mean(order_hour_of_day)) %>%
+  pivot_wider(
+    names_from = "product_name",
+    values_from = "mean_hour"
+  ) %>%
+   knitr::kable(digit = 1, caption = "Mean Hour of Day Pink Lady Apples and Coffee Ice Cream is Ordered Each Day of Week") %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed", font_size = 12))
+```
+
+* We can see from this table that both coffee ice cream and pink lady apples orders are on average placed between 11 am and 4 pm. Cofee ice cream also tends to be ordered later in the da than pink lady apples.
