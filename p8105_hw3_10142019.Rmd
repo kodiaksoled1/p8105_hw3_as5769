@@ -165,3 +165,14 @@ cleaned_instacart %>%
 ```
 
 * We can see from this table that both coffee ice cream and pink lady apples orders are on average placed between 11 am and 4 pm. Cofee ice cream also tends to be ordered later in the da than pink lady apples.
+
+# Problem 2
+
+## BRFSS Dataset
+
+### We first need to load the brfss data from the `p8105.datasets`:
+
+```{r}
+library(p8105.datasets)
+data("brfss_smart2010")
+```
