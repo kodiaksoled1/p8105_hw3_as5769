@@ -419,3 +419,99 @@ accel_data %>%
 ```
 
 * We can see from this last exploratory plot that there are two main spikes throughout the day amongst the 35 days. Although we cannot determine which minute of the day they are associated with, we can guess that activity levels are highest around 5 am and 7 pm, and that there was more activity during the first half of the 35 days than the second half. 
+
+### Lastly, we can making a single-panel plot that shows the 24-hour activity time courses for each day, using color to indicate day of the week by performing the following steps:
+* Cut and paste the first code chuck of this Accelerometer dataset, with the exception of the `pivot_longer` chunk in order to have our cleaned and tidied dataset, but in a wide format (the code below up until the `arrange` function) so we can change the dataset from minutes to hours
+* Transform variable "activity_1" to variable "activity_1440", from 1440 minutes to 24 hours by `select`ing 60 minutes at a time (e.g., activity_1:activity_60), changing the variable name to its corresponding hour of the day starting at 00:00/midnight, and summing the activity counts of those 60 minute rows using `rowSUMs` to get a summed activity count for each newly created hour variable. This needs to be repeated 24 times for every hour of the day.
+* Remove the old variables ("activity_1" through "activity_1440") by de`select`ing them
+* Transform the dataset to a longer format using `pivot_longer` so each hour of the day becomes a row with a corresponding activity count
+* Plot the 24 hours of the day on the x-axis and the summed activity count of the y-axis. Group the variables by "day_id" to create 35 lines on the plot, and color the lines by the day of the week. Use `geom_line` to create our desired plot and `labs` to create approparite annotation of the chart title and captions:
+
+```{r}
+hour_accel_data = 
+  read_csv("./data/accel_data.csv") %>%
+  janitor::clean_names() %>%
+  mutate_at(vars(starts_with("activity")), funs(round(., 1))) %>%
+  mutate(
+    day = str_to_lower(day),
+    day_type = case_when(
+      day %in% c("monday", "tuesday", "wednesday", "thursday", "friday") ~ "weekday",
+      day %in% c("saturday", "sunday") ~ "weekend", 
+      TRUE ~ ""
+      ),
+    day = forcats::fct_relevel(day, c("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"))
+    ) %>%
+  select(week, day_id, day, day_type, everything()) %>%
+  arrange(week, day) %>%
+  mutate(
+    hour_0000 = select(., activity_1:activity_60) %>%
+      rowSums(na.rm = TRUE), 
+    hour_0100 = select(., activity_61:activity_120) %>%
+      rowSums(na.rm = TRUE),
+    hour_0200 = select(., activity_121:activity_180) %>%
+      rowSums(na.rm = TRUE),
+    hour_0300 = select(., activity_181:activity_240) %>%
+      rowSums(na.rm = TRUE),
+    hour_0400 = select(., activity_241:activity_300) %>%
+      rowSums(na.rm = TRUE),
+    hour_0500 = select(., activity_301:activity_360) %>%
+      rowSums(na.rm = TRUE),
+    hour_0600 = select(., activity_361:activity_420) %>%
+      rowSums(na.rm = TRUE),
+    hour_0700 = select(., activity_421:activity_480) %>%
+      rowSums(na.rm = TRUE),
+    hour_0800 = select(., activity_481:activity_540) %>%
+      rowSums(na.rm = TRUE),
+    hour_0900 = select(., activity_541:activity_600) %>%
+      rowSums(na.rm = TRUE),
+    hour_1000 = select(., activity_601:activity_660) %>%
+      rowSums(na.rm = TRUE),
+    hour_1100 = select(., activity_661:activity_720) %>%
+      rowSums(na.rm = TRUE),
+    hour_1200 = select(., activity_721:activity_780) %>%
+      rowSums(na.rm = TRUE),
+    hour_1300 = select(., activity_781:activity_840) %>%
+      rowSums(na.rm = TRUE),
+    hour_1400 = select(., activity_841:activity_900) %>%
+      rowSums(na.rm = TRUE),
+    hour_1500 = select(., activity_901:activity_880) %>%
+      rowSums(na.rm = TRUE),
+    hour_1600 = select(., activity_881:activity_960) %>%
+      rowSums(na.rm = TRUE),
+    hour_1700 = select(., activity_961:activity_1020) %>%
+      rowSums(na.rm = TRUE),
+    hour_1800 = select(., activity_1021:activity_1080) %>%
+      rowSums(na.rm = TRUE),
+    hour_1900 = select(., activity_1081:activity_1140) %>%
+      rowSums(na.rm = TRUE),
+    hour_2000 = select(., activity_1141:activity_1200) %>%
+      rowSums(na.rm = TRUE),
+    hour_2100 = select(., activity_1201:activity_1260) %>%
+      rowSums(na.rm = TRUE),
+    hour_2200 = select(., activity_1261:activity_1320) %>%
+      rowSums(na.rm = TRUE),
+    hour_2300 = select(., activity_1321:activity_1380) %>%
+      rowSums(na.rm = TRUE),
+    hour_2400 = select(., activity_1381:activity_1440) %>%
+      rowSums(na.rm = TRUE),
+  ) %>%
+  select(-c(5:1444)) %>%
+  pivot_longer(
+    cols = starts_with("hour_"),
+    names_to = "hour_of_day",
+    names_prefix = "hour_",
+    values_to = "activity_count"
+  )
+
+hour_accel_data %>%
+  ggplot(aes(x = hour_of_day, y = activity_count, group = day_id, color = day)) +
+  geom_line() +
+  labs(
+    title = "Physicial Activity of a 63-year-old Male Over the 24-Hours of a Day by Day of the Week",
+    x = "Hours in a Day",
+    y = "Activity Count",
+    caption = "Data from the Accelerometer Dataset")
+```
+
+### Description
+* Based on this graph, we can see that there are three times during the day that activity count is highest: 11 am, 4 pm, and the highest at 9 pm. Moreover, there is a dip in activity at around 3 pm and a fairly absent level of activity from midnight to 4 am when it is assumed this man is sleeiping.  
