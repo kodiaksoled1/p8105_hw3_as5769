@@ -306,3 +306,50 @@ brfss %>%
 
 ### Description
 * From these two side-by-side plots, we can visualize how the quality of health of NY residents varied between the years of 2006 and 2010. It seems that quality of health became more extreme in 2010 where residents' ratings of poor and fair health were lower than in 2006 and their ratings of good, very good, and excellent health were higher than in 2006
+
+# Problem 3 
+
+## Accelerometer Data
+
+### We first need to read in the Accelerometer data and tidy it according to the instructions:
+* Include all originally observed variables and values
+* Have useful variable names
+* Make a weekday vs weekend variable
+* Create reasonable variable classes
+
+### To achieve this we can use the following process: 
+* Clean up the dataset using `janitor::clean_names`
+* Round off the values of the variables from "activity_1" to "activity_1440" using the `round` function in `mutate_at`
+* Use `mutate` to: make the "day" variable lower case; make a "weekday" variable for monday-friday and a "weekend" variable for saturday and sunday using `case_when`; and order the data so the days of the week display from monday to sunday using `forcats::fct_relevel`
+* Order the variables so that it displays in the order of: "week", "day_id", "day", "day_type", then everything else using `select`
+* `arrange` the values of "week" and "day so they are first ordered by week (1-5) then by day (monday-sunday)
+* Lastly, to create a tidy dataset, we can pivot the dataframe from wide to long using `pivot_longer` so that each "minute_of_day" had its own row with a cooresponding "activity_count":
+
+```{r}
+accel_data = 
+  read_csv("./data/accel_data.csv") %>%
+  janitor::clean_names() %>%
+  mutate_at(vars(starts_with("activity")), funs(round(., 1))) %>%
+  mutate(
+    day = str_to_lower(day),
+    day_type = case_when(
+      day %in% c("monday", "tuesday", "wednesday", "thursday", "friday") ~ "weekday",
+      day %in% c("saturday", "sunday") ~ "weekend", 
+      TRUE ~ ""
+      ),
+    day = forcats::fct_relevel(day, c("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"))
+    ) %>%
+  select(week, day_id, day, day_type, everything()) %>%
+  arrange(week, day) %>%
+  pivot_longer(
+    cols = starts_with("activity_"),
+    names_to = "minute_of_day",
+    names_prefix = "activity_",
+    values_to = "activity_count"
+  )
+
+accel_data
+```
+
+### Description
+* There are `r nrow(accel_data)` observations of `r ncol(accel_data)` variables in the Acceleration dataset. The key variables include: "week" (1-5), "day_id" (1-35), "day" (monday-sunday), "type of day" (weekday/weekend), "minute_of_day" (1-1440), and each minute's corresponding "activity_count". 
