@@ -404,3 +404,18 @@ accel_data %>%
 ```
 
 * This second plot allows us to see that this man's activity trended towards decresing from week 1 to week 5, particularly between week 3 and week 4 and also declines over the weekend. 
+
+### 3. We can also try plotting the activity count across the 1400 minutes of the day, however, its very challenging to determine any trends due to the shear numbers of values on the x-axis: 
+
+```{r}
+accel_data %>%
+  ggplot(aes(x = minute_of_day, y = activity_count, color = day_id)) +
+  geom_line() +
+  labs(
+    title = "Physicial Activity of a 63-year-old Male in a 24-Hour Day Over 5 Weeks",
+    x = "Minute of a 24-Hour Day",
+    y = "Activity Counts",
+    caption = "Data from the Accelerometer Dataset")
+```
+
+* We can see from this last exploratory plot that there are two main spikes throughout the day amongst the 35 days. Although we cannot determine which minute of the day they are associated with, we can guess that activity levels are highest around 5 am and 7 pm, and that there was more activity during the first half of the 35 days than the second half. 
