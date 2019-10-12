@@ -260,3 +260,18 @@ summary(excellent_brfss)
 
 ### Description
 * There are `r nrow(excellent_brfss)` rows in this resulting dataset of `r ncol(excellent_brfss)` variables. The "mean_data_value" variable we created ranges from 11.50 to 29.46 with an average value of 21.97.
+
+### Now from this dataset, we can make a “spaghetti” plot of the `mean_data_value` over time within a state. This requires we plot "year" on the x-axis, "mean_data_value" (i.e., "mean prevalence") on the y-axis, and then `group` by "state" to produce a plot (using `geom_line`) that has a line for each state which shows the mean prevalence of the state from 2002 to 2010:
+
+```{r}
+ggplot(excellent_brfss, aes(x = year, y = mean_data_value, group = state, color = state)) +
+  geom_line() + 
+  labs(
+    title = "Prevalence of Adult US Residents by State from 2002-2010",
+    x = "Year",
+    y = "Mean Prevalence", 
+    caption = "Data from the BRFSS Dataset")
+```
+
+### Description
+* This plot visually displays what we described above: the mean prevalence ranges from ~12-30 with an average value of ~23. We can also see that west virginia (wv) has a big dip in 2005 to 11.5 and another dip in 2009 to 13.4. This may be pulling down the national mean prevelance of states with "excellent" responses and we may want to investigate what happened in west virginia in those two years. 
