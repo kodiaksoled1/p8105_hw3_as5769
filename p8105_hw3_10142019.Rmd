@@ -36,3 +36,19 @@ scale_fill_discrete = scale_fill_viridis_d
 
 theme_set(theme_minimal() + theme(legend.position = "bottom"))
 ```
+
+# Problem 1 
+
+## Instacart Dataset
+
+### We first need to load the data from the `p8105.datasets` and tidy the dataset before we can begin exploring it: 
+
+```{r}
+library(p8105.datasets)
+data("instacart")
+
+cleaned_instacart = 
+  instacart %>%
+  janitor::clean_names() %>%
+  mutate(product_name = str_to_lower(product_name))
+```
