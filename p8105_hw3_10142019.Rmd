@@ -366,3 +366,24 @@ aggregate_accel_data %>%
     knitr::kable(caption = "Total Activity (mean minuutes) Count in a 24-Hour Period for Five Weeks") %>%
   kable_styling(bootstrap_options = c("striped", "condensed", font_size = 12))
 ```
+
+## Identifying trends in the aggregated dataset
+
+### We can create a few visuals of the aggregated dataset in order to identify trends that are occuring: 
+
+### 1. We can create a line plot to examine the average (`mean(activity_count` for an easier-to-read y-axis)) activity count for each of the five weeks by the day of the week: 
+
+```{r}
+accel_data %>%
+  group_by(week, day, day_type) %>%
+  summarize(average_activity = mean(activity_count)) %>%
+  ggplot(aes(x = day, y = average_activity, group = week, color = week)) +
+  geom_line() +
+  labs(
+    title = "Physicial Activity of a 63-year-old Male \nAcross Five Weeks by Day of the Week",
+    x = "Day of the Week",
+    y = "Activity Counts",
+    caption = "Data from the Accelerometer Dataset")
+```
+
+* This plot allows us to see that this man's activity increased across the week (from monday to sunday) for weeks 1, 2, and 3. However, for weeks 4 and 5, there is a sharp decline in activity that occurs over the weekend compared to the weekday.
