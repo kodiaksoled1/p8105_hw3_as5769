@@ -251,3 +251,12 @@ excellent_brfss =
 
 excellent_brfss
 ```
+
+### We can see the summary statistics on the resulting dataset by using the `summary` function: 
+
+```{r}
+summary(excellent_brfss)
+```
+
+### Description
+* There are `r nrow(excellent_brfss)` rows in this resulting dataset of `r ncol(excellent_brfss)` variables. The "mean_data_value" variable we created ranges from 11.50 to 29.46 with an average value of 21.97.
