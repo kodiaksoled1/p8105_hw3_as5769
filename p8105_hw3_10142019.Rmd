@@ -198,3 +198,39 @@ brfss =
     response = forcats::fct_relevel(response, c("poor", "fair", "good", "very good", "excellent"))
     )
 ```
+
+## Problem 2 Questions
+
+### To determine which states were observed at 7 or more locations in 2002 and in 2010, we need to perform the following steps for each year: 
+* `filter` by the year
+* `group_by` the "state" then `summarize` the "locations" that are unique using `n_distinct`
+* `filter` for states that were observed at 7 or more locations
+
+```{r}
+states_2002_locations = 
+  brfss %>%
+  filter(year == 2002) %>%
+  group_by(state) %>%
+  summarize(num_location = n_distinct(location)) %>%
+  filter(num_location >= 7)
+
+states_2002_locations %>%
+   knitr::kable(caption = "States Observed in >=7 Locations in 2002") %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed", font_size = 12))
+
+states_2010_locations =
+  brfss %>%
+  filter(year == 2010) %>%
+  group_by(state) %>%
+  summarize(location = n_distinct(location)) %>%
+  filter(location >= 7) 
+
+states_2010_locations %>%
+   knitr::kable(caption = "States Observed in >=7 Locations in 2002") %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed", font_size = 12))
+```
+
+### Description
+* There were `r nrow(states_2002_locations)` states in 2002 that were observed at 7 or more locations. These states included: ct, ft, ma, nc, nj, pa.
+
+* There were `r nrow(states_2010_locations)` states in 2010 that were observed at 7 or more locations. These states included: ca, co, fl, ma, md, nc, ne, nj, ny, oh, pa, sc, tx, wa.
