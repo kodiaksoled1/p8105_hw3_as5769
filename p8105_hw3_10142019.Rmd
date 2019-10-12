@@ -176,3 +176,25 @@ cleaned_instacart %>%
 library(p8105.datasets)
 data("brfss_smart2010")
 ```
+
+### Then we can clean the data as instructed: 
+* Use `janitor::clean_names` to tidy the data and `mutate_all` to change all variables and values to lower case
+* `rename` a few variables ("locationabbr", "locationdesc", and "respid") to have more appropriate variable names
+* Focus on the "overall health" topic by `filter`ing for that variable (we don't need to `filter` again to only include responses from “excellent” to “poor” as `filter`ing for "overall health" already limited the response values from “excellent” to “poor”)
+* Organize responses from "poor" to "excellent" using `forcats::fct_relevel` within the `mutate` function
+
+```{r}
+brfss =
+  brfss_smart2010 %>%
+  janitor::clean_names() %>%
+  mutate_all(tolower) %>%
+  rename(
+    state = locationabbr, 
+    location = locationdesc,
+    response_id = respid
+    ) %>%
+  filter(topic == "overall health") %>%
+  mutate(
+    response = forcats::fct_relevel(response, c("poor", "fair", "good", "very good", "excellent"))
+    )
+```
