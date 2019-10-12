@@ -387,3 +387,20 @@ accel_data %>%
 ```
 
 * This plot allows us to see that this man's activity increased across the week (from monday to sunday) for weeks 1, 2, and 3. However, for weeks 4 and 5, there is a sharp decline in activity that occurs over the weekend compared to the weekday.
+
+### 2. We can create another line plot to examine the average (`mean(activity_count` for an easier-to-read y-axis)) activity count for each of day of the week across the five weeks: 
+
+```{r}
+accel_data %>%
+  group_by(week, day, day_type) %>%
+  summarize(average_activity = mean(activity_count)) %>%
+  ggplot(aes(x = week, y = average_activity, group = day, color = day)) +
+  geom_line() +
+  labs(
+    title = "Physicial Activity of a 63-year-old Male \nAcross the Days of the Week over Five Weeks",
+    x = "Week",
+    y = "Activity Counts",
+    caption = "Data from the Accelerometer Dataset")
+```
+
+* This second plot allows us to see that this man's activity trended towards decresing from week 1 to week 5, particularly between week 3 and week 4 and also declines over the weekend. 
