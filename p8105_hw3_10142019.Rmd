@@ -99,4 +99,32 @@ cleaned_instacart %>%
 ```
 
 ### Description
-* It is also evident from this bar plot that the "fresh vegetables" and "fresh fruits" aisles are clearly the most popular aisles to order from. 
+* It is also evident from this bar plot that the "fresh vegetables" and "fresh fruits" aisles are clearly the most popular aisles to order from.
+
+### To make a table with the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”, we need to perform several steps. We need to:
+* Reduce our dataframe by first `select`ing the rows we care about ("aisle" and "product_name") then `filter`ing so only the three aisles we care about are present in the dataset
+* Count the number of times each product was ordered using `count`, group the products by the aisle they are from using `group_by`, then select the top three products in each aisle using `top_n`
+* Create a rank varaible to specify the popularity of each product from each aisle using `rank(desc(n))`
+* Organize the dataset for increased ease of reading by `arrange`ing the products in each aisle in descending order
+* Produce our reader-friendly table using `knitr::kable`:
+
+```{r}
+cleaned_instacart %>%
+  select(aisle, product_name) %>%
+  filter(
+    aisle == "baking ingredients" |
+      aisle == "packaged vegetables fruits" |
+      aisle == "dog food care"
+    ) %>%
+  count(product_name, aisle) %>%
+  group_by(aisle) %>%
+  top_n(n = 3) %>%
+  mutate(
+    rank(desc(n))
+    ) %>%
+  rename(rank = 'rank(desc(n))') %>%
+  select(aisle, product_name, n, rank) %>%
+  arrange(aisle, desc(n)) %>%
+  knitr::kable(caption = "Three Most Popular Items among the Baking Ingredients, Packaged Vegetable Fruits, and Dog Food Car Aisles") %>%
+  kable_styling(bootstrap_options = c("striped", "condensed", font_size = 12))
+```
