@@ -234,3 +234,20 @@ states_2010_locations %>%
 * There were `r nrow(states_2002_locations)` states in 2002 that were observed at 7 or more locations. These states included: ct, ft, ma, nc, nj, pa.
 
 * There were `r nrow(states_2010_locations)` states in 2010 that were observed at 7 or more locations. These states included: ca, co, fl, ma, md, nc, ne, nj, ny, oh, pa, sc, tx, wa.
+
+### To make a dataset that is limited to "excellent" responses, and contains, year, state, and a variable "mean_data_value" that averages the "data_value" across locations within a state we need to do the following:
+* Reduce the dataframe by first `filter`ing the responses that are "excellent", then `select`ing the variables that we care about ("year", "state", and "data_value")
+* `mutate` the variable "data_value" from a character to numeric vector in preparation of finding the mean of this variable
+* Create the "mean_data_value" variable by first grouping by "state" and "year", then using `summarize` to create a new varaible that is the average "data_value" across all locations within a state:
+
+```{r}
+excellent_brfss =
+  brfss %>%
+  filter(response == "excellent") %>%
+  select(year, state, data_value) %>%
+  mutate(data_value = as.numeric(data_value)) %>%
+  group_by(state, year) %>%
+  summarize(mean_data_value = mean(data_value))
+
+excellent_brfss
+```
