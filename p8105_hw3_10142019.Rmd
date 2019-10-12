@@ -64,3 +64,19 @@ str(cleaned_instacart)
 * We can see that there are `r nrow(instacart)` observations of `r ncol(instacart)` variables for a total of `r nrow(instacart)*ncol(instacart)` values in the Instacart dataset. The majority of the variables are integers, but four are character vectors (`department`, `aisle`, `product_name`, and `eval_set`). 
 * Some key variables in this dataset include the order and product identifier, the name of the product, the name and identifier of the department and aisle, and several variables that include information about the ordering history of each product. 
 * An illustrative example in this dataset is that an "organic hass avocado" (product identifier #47209) was purchased by customer #112108 at 10 am on the 4th day of the week. This produce is located in the "fresh fruit" aisle (aisle identifier #24) which is part of the "produce" department (department identifier #4). In total, there were `r sum(pull(cleaned_instacart %>% filter(product_name == "organic hass avocado") %>% count()))` organic hass avocados ordered in this dataset. Another way of looking at this dataset is that customer #112108 placed an order at 10 am (order identifier #1) which had eight items in it ("bulgarian yogurt", "organic 4% milk fat whole milk cottage cheese", "organic celery hearts", "cucumber kirby", "lightly smoked sardines in olive oil", "bag of organic bananas", "organic hass avocado", and "organic whole string chees"e) which came from three departments ("dairy eggs", "produce", and "canned goods").
+
+## Problem 1 Questions
+
+### First, we can determine the number of aisles in the Instacart dataaset by grouping the dataset by aisle (`group_by`) then counting the number of aisles (`count`). We can also determine which aisles most items are ordered from by arranging the data in descending order (`arrange(desc(n))`):
+
+```{r}
+aisle = 
+  cleaned_instacart %>% 
+  group_by(aisle) %>%
+  count() %>%
+  arrange(desc(n)) 
+aisle
+```
+
+### Description
+* From this tibble, we can see there are `r nrow(aisle)` aisles in this dataset. The most orders are from the fresh vegetables and fresh fruits aisles with 150,609 and 150,473 orders from each aisle, respectively.
