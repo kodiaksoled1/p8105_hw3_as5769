@@ -353,3 +353,16 @@ accel_data
 
 ### Description
 * There are `r nrow(accel_data)` observations of `r ncol(accel_data)` variables in the Acceleration dataset. The key variables include: "week" (1-5), "day_id" (1-35), "day" (monday-sunday), "type of day" (weekday/weekend), "minute_of_day" (1-1440), and each minute's corresponding "activity_count". 
+
+### From this tidied dataset, we can now aggregate the data accross minutes to create a total activity variable for each day. We can do this by grouping the dataset by "week", "day", and "day_type" ("day_id" was dropped as it wasn't deemed meaningful to include for this table). Then, we can summarize the "activity_count" using the `sum` function. We can then create a reader-friendly table to display the "total_activity" for each of the 35 days using `knitr::kable`:
+
+```{r}
+aggregate_accel_data =
+  accel_data %>%
+  group_by(week, day, day_type) %>%
+  summarize(total_activity = sum(activity_count))
+
+aggregate_accel_data %>%
+    knitr::kable(caption = "Total Activity (mean minuutes) Count in a 24-Hour Period for Five Weeks") %>%
+  kable_styling(bootstrap_options = c("striped", "condensed", font_size = 12))
+```
