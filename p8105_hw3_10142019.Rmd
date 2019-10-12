@@ -91,9 +91,9 @@ cleaned_instacart %>%
   ggplot(aes(x = aisle, y = n)) +
   geom_bar(stat = "identity") + coord_flip() +
   labs(
-    title = "Number of Items Ordered per Aisles (>10,000)",
-    x = "Number of Items Ordered",
-    y = "Aisle Name", 
+    title = "Number of Items Ordered per Aisle (>10,000)",
+    x = "Aisle Name",
+    y = "Number of Items Ordered", 
     caption = "Data from the Instacart Dataset"
     )
 ```
@@ -363,7 +363,7 @@ aggregate_accel_data =
   summarize(total_activity = sum(activity_count))
 
 aggregate_accel_data %>%
-    knitr::kable(caption = "Total Activity (mean minuutes) Count in a 24-Hour Period for Five Weeks") %>%
+    knitr::kable(caption = "Total Activity (mean minutes) Count for Each Day of the Dataset") %>%
   kable_styling(bootstrap_options = c("striped", "condensed", font_size = 12))
 ```
 
@@ -380,7 +380,7 @@ accel_data %>%
   ggplot(aes(x = day, y = average_activity, group = week, color = week)) +
   geom_line() +
   labs(
-    title = "Physicial Activity of a 63-year-old Male \nAcross Five Weeks by Day of the Week",
+    title = "Physicial Activity of a 63-year-old Male Across Five Weeks by Day of the Week",
     x = "Day of the Week",
     y = "Activity Counts",
     caption = "Data from the Accelerometer Dataset")
@@ -397,7 +397,7 @@ accel_data %>%
   ggplot(aes(x = week, y = average_activity, group = day, color = day)) +
   geom_line() +
   labs(
-    title = "Physicial Activity of a 63-year-old Male \nAcross the Days of the Week over Five Weeks",
+    title = "Physicial Activity of a 63-year-old Male Across the Days of the Week over Five Weeks",
     x = "Week",
     y = "Activity Counts",
     caption = "Data from the Accelerometer Dataset")
@@ -412,7 +412,7 @@ accel_data %>%
   ggplot(aes(x = minute_of_day, y = activity_count, color = day_id)) +
   geom_line() +
   labs(
-    title = "Physicial Activity of a 63-year-old Male in a 24-Hour Day Over 5 Weeks",
+    title = "Physicial Activity of a 63-year-old Male in a 24-Hour Day Across 5 Weeks",
     x = "Minute of a 24-Hour Day",
     y = "Activity Counts",
     caption = "Data from the Accelerometer Dataset")
@@ -515,6 +515,8 @@ hour_accel_data %>%
 
 ### Description
 * Based on this graph, we can see that there are three times during the day that activity count is highest: 11 am, 4 pm, and the highest at 9 pm. Moreover, there is a dip in activity at around 3 pm and a fairly absent level of activity from midnight to 4 am when it is assumed this man is sleeiping.  
+
+## Extra Plots
 
 ### I wanted to get a better sense of what was happening to this man's activity levels across each hour of the day, on each day of the week so I plotting the hour of the day against the activity count (which I divided by 1000 to have a legible x-axis) and then used `facet_grid` to create a seven-panel plot of the seven days of the week:
 
