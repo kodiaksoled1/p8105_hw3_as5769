@@ -532,3 +532,22 @@ hour_accel_data %>%
 ```
 
 * This plot made it easier for me to see a similar pattern as above, but with less clutter: the man is resting from midnight to 4 am and again at 3 pm and is very active at 11 am, 4 pm, and 9 pm. 
+
+### I also thought it might be interesting to look at the distribution of activity for each day of the week which we can do using a ridge plot (note: the activity count is averaged in order to display the data across the x-axis in a meaningful way): 
+
+```{r}
+library(ggridges)
+hour_accel_data %>%
+  mutate(week = as.numeric(week)) %>%
+  group_by(week, day, day_id) %>%
+  summarize(total_activity = mean(activity_count)) %>%
+  ggplot(aes(x = total_activity, y = day, fill = day)) +
+  geom_density_ridges(scale = .85) +
+  labs(
+    title = "Average Physicial Activity of a 63-year-old Male By Day of Week",
+    x = "Average Activity Count",
+    y = "Day of Week",
+    caption = "Data from the Accelerometer Dataset")
+```
+
+* We can see from this plot that the distribution generally falls between an average of 10,000 and 30,000 activities among the seven days of the week for the five weeks data is captured. 
